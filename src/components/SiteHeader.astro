@@ -1,0 +1,36 @@
+---
+import ThemeToggle from './ThemeToggle.astro';
+import { site } from '../config/site';
+
+const path = Astro.url.pathname;
+const isActive = (href: string) => (path === href ? 'page' : undefined);
+const showWriting = Astro.props.showWriting ?? true;
+
+interface Props {
+  showWriting?: boolean;
+}
+---
+
+<header class="site-header">
+  <a class="site-header__brand" href="/">{site.name}</a>
+  <nav class="site-nav" aria-label="Primary">
+    <ul class="site-nav__list">
+      <li><a class="site-nav__link" href="/#work">Work</a></li>
+      <li><a class="site-nav__link" href="/#experience">Experience</a></li>
+      {
+        showWriting && (
+          <li>
+            <a class="site-nav__link" href="/writing/" aria-current={isActive('/writing/')}>
+              Writing
+            </a>
+          </li>
+        )
+      }
+      <li><a class="site-nav__link" href="/#about">About</a></li>
+      <li>
+        <a class="site-nav__link site-nav__link--cta" href={site.links.resume}>Resume (PDF)</a>
+      </li>
+    </ul>
+    <ThemeToggle />
+  </nav>
+</header>

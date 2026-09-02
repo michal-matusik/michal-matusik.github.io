@@ -1,0 +1,120 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import ProjectCard from '../components/ProjectCard.astro';
+import WritingCard from '../components/WritingCard.astro';
+import { getCollection } from 'astro:content';
+import { site } from '../config/site';
+
+const allProjects = await getCollection('projects', ({ data }) => !data.draft);
+const featuredProjects = allProjects
+  .filter((p) => p.data.featured)
+  .sort((a, b) => a.data.order - b.data.order || a.data.startDate.getTime() - b.data.startDate.getTime())
+  .slice(0, 3);
+
+const allPosts = await getCollection('writing', ({ data }) => !data.draft);
+const showWriting = allPosts.length >= 2;
+const featuredPosts = allPosts
+  .filter((p) => p.data.featured)
+  .sort((a, b) => b.data.published.getTime() - a.data.published.getTime())
+  .slice(0, 3);
+---
+
+<BaseLayout title={`${site.name} — ML/AI Software Engineer`} description={site.description} personJsonLd showWriting={showWriting}>
+  <section class="container hero" id="top">
+    <!--
+      Portrait placeholder: drop a square photo at public/portrait.jpg
+      (recommended ~480x480, optimized/compressed) and replace the
+      placeholder <div> below with:
+      <img class="hero__portrait" src="/portrait.jpg" alt={site.name} width="144" height="144" />
+    -->
+    <div class="hero__portrait hero__portrait--placeholder" role="img" aria-label={`Portrait of ${site.name}`}>
+      Add portrait.jpg to /public
+    </div>
+    <div class="hero__content">
+      <h1 class="hero__name">{site.name}</h1>
+      <p class="hero__role">{site.role}</p>
+      <p class="hero__value">{site.positioning}</p>
+      <div class="hero__links">
+        <a class="button button--primary" href={site.links.github}>GitHub</a>
+        {site.links.linkedin && <a class="button" href={site.links.linkedin}>LinkedIn</a>}
+        <a class="button" href={`mailto:${site.email}`}>Email</a>
+        <a class="button" href={site.links.resume}>Resume (PDF)</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="container credibility">
+    <span>Purdue University — Computer Science</span>
+    <span>Focus: Machine Learning, Deep Learning, AI</span>
+  </section>
+
+  <section class="container section" id="work">
+    <div class="section__heading">
+      <h2>Selected work</h2>
+      <a class="section__link" href="/projects/">View all projects &rarr;</a>
+    </div>
+    {
+      featuredProjects.length > 0 ? (
+        <div class="card-grid">
+          {featuredProjects.map((project) => <ProjectCard project={project} />)}
+        </div>
+      ) : (
+        <p class="hero__role">Add featured projects to src/content/projects to populate this section.</p>
+      )
+    }
+  </section>
+
+  <section class="container section" id="experience">
+    <div class="section__heading">
+      <h2>Experience</h2>
+    </div>
+    <div class="experience-list">
+      <div class="experience-item">
+        <p class="experience-item__meta">[Dates]</p>
+        <div>
+          <p class="experience-item__title">[Role] — [Organization]</p>
+          <ul>
+            <li>[Outcome bullet — what you designed, evaluated, or shipped.]</li>
+            <li>[Outcome bullet.]</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  {
+    showWriting && (
+      <section class="container section" id="writing">
+        <div class="section__heading">
+          <h2>Writing</h2>
+          <a class="section__link" href="/writing/">
+            View all writing &rarr;
+          </a>
+        </div>
+        <div class="card-grid">
+          {featuredPosts.map((post) => <WritingCard post={post} />)}
+        </div>
+      </section>
+    )
+  }
+
+  <section class="container section prose-width" id="about">
+    <div class="section__heading">
+      <h2>About</h2>
+    </div>
+    <p>
+      [80-140 words: technical interests, working style, and one human detail. Avoid
+      duplicating your resume — use this space to say what kind of problems you like working
+      on and how you think.]
+    </p>
+  </section>
+
+  <section class="container section" id="contact">
+    <div class="section__heading">
+      <h2>Contact</h2>
+    </div>
+    <p>
+      Reach out at <a href={`mailto:${site.email}`}>{site.email}</a>.
+    </p>
+  </section>
+</BaseLayout>

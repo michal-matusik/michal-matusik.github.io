@@ -1,0 +1,28 @@
+---
+import BaseLayout from './BaseLayout.astro';
+import { site } from '../config/site';
+import type { CollectionEntry } from 'astro:content';
+
+type Props = CollectionEntry<'projects'>['data'] & { id: string };
+
+const { title, summary, role, stack, links } = Astro.props;
+---
+
+<BaseLayout title={`${title} — ${site.name}`} description={summary} type="article">
+  <article class="container prose-width">
+    <p><a href="/projects/">&larr; Back to Projects</a></p>
+    <h1>{title}</h1>
+    <p class="hero__role">{role}</p>
+    <ul class="tag-list">
+      {stack.map((tech) => <li class="tag">{tech}</li>)}
+    </ul>
+    <p class="hero__links">
+      {links.source && <a class="button" href={links.source}>Source</a>}
+      {links.demo && <a class="button" href={links.demo}>Demo</a>}
+      {links.paper && <a class="button" href={links.paper}>Paper</a>}
+    </p>
+    <div class="prose">
+      <slot />
+    </div>
+  </article>
+</BaseLayout>

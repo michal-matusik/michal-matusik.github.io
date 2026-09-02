@@ -1,0 +1,24 @@
+---
+import type { CollectionEntry } from 'astro:content';
+
+interface Props {
+  post: CollectionEntry<'writing'>;
+}
+
+const { post } = Astro.props;
+const { title, description, published, tags } = post.data;
+const dateLabel = published.toLocaleDateString('en-US', {
+  year: 'numeric',
+  month: 'long',
+  day: 'numeric',
+});
+---
+
+<a class="card" href={`/writing/${post.id}/`}>
+  <span class="card__type">{dateLabel}</span>
+  <h3 class="card__title">{title}</h3>
+  <p class="card__summary">{description}</p>
+  <ul class="tag-list">
+    {tags.map((tag) => <li class="tag">{tag}</li>)}
+  </ul>
+</a>

@@ -1,0 +1,26 @@
+---
+import type { CollectionEntry } from 'astro:content';
+
+interface Props {
+  project: CollectionEntry<'projects'>;
+}
+
+const { project } = Astro.props;
+const { title, summary, type, impact, stack } = project.data;
+const typeLabel: Record<string, string> = {
+  production: 'Production',
+  research: 'Research',
+  'open-source': 'Open source',
+  experiment: 'Experiment',
+};
+---
+
+<a class="card" href={`/projects/${project.id}/`}>
+  <span class="card__type">{typeLabel[type]}</span>
+  <h3 class="card__title">{title}</h3>
+  <p class="card__summary">{summary}</p>
+  <p class="card__impact">{impact}</p>
+  <ul class="tag-list">
+    {stack.map((tech) => <li class="tag">{tech}</li>)}
+  </ul>
+</a>

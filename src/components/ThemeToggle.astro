@@ -1,0 +1,36 @@
+<button
+  id="theme-toggle"
+  class="theme-toggle"
+  type="button"
+  aria-label="Toggle color theme"
+>
+  <span aria-hidden="true" id="theme-toggle-icon">◐</span>
+</button>
+
+<script is:inline>
+  (function () {
+    var button = document.getElementById('theme-toggle');
+    var icon = document.getElementById('theme-toggle-icon');
+
+    function currentTheme() {
+      return document.documentElement.getAttribute('data-theme') === 'dark' ? 'dark' : 'light';
+    }
+
+    function render() {
+      icon.textContent = currentTheme() === 'dark' ? '☀' : '☾';
+    }
+
+    render();
+
+    button.addEventListener('click', function () {
+      var next = currentTheme() === 'dark' ? 'light' : 'dark';
+      document.documentElement.setAttribute('data-theme', next);
+      try {
+        localStorage.setItem('theme', next);
+      } catch (e) {
+        /* privacy mode: theme choice won't persist */
+      }
+      render();
+    });
+  })();
+</script>
