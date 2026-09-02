@@ -6,7 +6,7 @@ export const site = {
   positioning:
     'Purdue University freshman studying computer science, focused on machine learning, deep learning, and general AI.',
   url: 'https://michal-matusik.github.io',
-  email: '[EMAIL]',
+  email: 'mmatusi@purdue.edu',
   location: 'West Lafayette, IN',
   availability: null as string | null,
   links: {
