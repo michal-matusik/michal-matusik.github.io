@@ -7,7 +7,7 @@ import sitemap from '@astrojs/sitemap';
 // https://astro.build/config
 export default defineConfig({
   output: 'static',
-  site: 'https://xxx-mike-xxx.github.io',
+  site: 'https://michal-matusik.github.io',
   trailingSlash: 'always',
   integrations: [mdx(), sitemap()]
 });
