@@ -25,7 +25,9 @@ for the original specifications this was built from.
 - `public/portrait.jpg` — add a personal photo, then swap the placeholder `<div>` for an
   `<img>` per the comment in `src/pages/index.astro`.
 - `public/resume.pdf` — add your resume; the header already links to `/resume.pdf`.
-- `src/pages/index.astro` — Experience and About sections still hold bracketed placeholder copy.
+- `src/pages/index.astro` — Experience section shows an empty-state message until real
+  entries are added; replace the `hero__role` placeholder paragraph with actual
+  `experience-item` entries when ready.
 
 ## Deployment
 
