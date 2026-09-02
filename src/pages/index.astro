@@ -21,15 +21,7 @@ const featuredPosts = allPosts
 
 <BaseLayout title={`${site.name} — ML/AI Software Engineer`} description={site.description} personJsonLd showWriting={showWriting}>
   <section class="container hero" id="top">
-    <!--
-      Portrait placeholder: drop a square photo at public/portrait.jpg
-      (recommended ~480x480, optimized/compressed) and replace the
-      placeholder <div> below with:
-      <img class="hero__portrait" src="/portrait.jpg" alt={site.name} width="144" height="144" />
-    -->
-    <div class="hero__portrait hero__portrait--placeholder" role="img" aria-label={`Portrait of ${site.name}`}>
-      Add portrait.jpg to /public
-    </div>
+    <img class="hero__portrait" src="/portrait.jpg" alt={site.name} width="144" height="144" />
     <div class="hero__content">
       <h1 class="hero__name">{site.name}</h1>
       <p class="hero__role">{site.role}</p>
