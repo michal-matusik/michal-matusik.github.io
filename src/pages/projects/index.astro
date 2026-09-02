@@ -3,14 +3,21 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 import ProjectCard from '../../components/ProjectCard.astro';
 import { getCollection } from 'astro:content';
 import { site } from '../../config/site';
+import { getSiteVisibility } from '../../lib/site-state';
 
 const projects = (await getCollection('projects', ({ data }) => !data.draft)).sort((a, b) => {
   if (a.data.featured !== b.data.featured) return a.data.featured ? -1 : 1;
   return b.data.startDate.getTime() - a.data.startDate.getTime();
 });
+const { showWriting, showRSS } = await getSiteVisibility();
 ---
 
-<BaseLayout title={`Projects — ${site.name}`} description="Curated work overview.">
+<BaseLayout
+  title={`Projects — ${site.name}`}
+  description="Curated work overview."
+  showWriting={showWriting}
+  showRSS={showRSS}
+>
   <section class="container section">
     <h1>Projects</h1>
     <div class="card-grid">

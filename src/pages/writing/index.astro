@@ -3,22 +3,27 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 import WritingCard from '../../components/WritingCard.astro';
 import { getCollection } from 'astro:content';
 import { site } from '../../config/site';
+import { getSiteVisibility } from '../../lib/site-state';
 
 const posts = (await getCollection('writing', ({ data }) => !data.draft)).sort(
   (a, b) => b.data.published.getTime() - a.data.published.getTime()
 );
+const { showWriting, showRSS } = await getSiteVisibility();
 ---
 
-<BaseLayout title={`Writing — ${site.name}`} description="Topics and editorial promise.">
+<BaseLayout
+  title={`Writing — ${site.name}`}
+  description="Topics and editorial promise."
+  showWriting={showWriting}
+  showRSS={showRSS}
+>
   <section class="container section">
     <h1>Writing</h1>
     {
-      posts.length > 0 ? (
+      posts.length > 0 && (
         <div class="card-grid">
           {posts.map((post) => <WritingCard post={post} />)}
         </div>
-      ) : (
-        <p>No posts published yet.</p>
       )
     }
   </section>

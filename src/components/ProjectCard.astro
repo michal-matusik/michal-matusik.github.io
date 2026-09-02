@@ -6,21 +6,28 @@ interface Props {
 }
 
 const { project } = Astro.props;
-const { title, summary, type, impact, stack } = project.data;
+const { title, subtitle, summary, type, impact, stack, links } = project.data;
 const typeLabel: Record<string, string> = {
   production: 'Production',
   research: 'Research',
   'open-source': 'Open source',
   experiment: 'Experiment',
 };
+const href = `/projects/${project.id}/`;
 ---
 
-<a class="card" href={`/projects/${project.id}/`}>
+<article class="card">
   <span class="card__type">{typeLabel[type]}</span>
-  <h3 class="card__title">{title}</h3>
+  <h3 class="card__title"><a href={href}>{title}</a></h3>
+  {subtitle && <p class="card__subtitle">{subtitle}</p>}
   <p class="card__summary">{summary}</p>
   <p class="card__impact">{impact}</p>
   <ul class="tag-list">
     {stack.map((tech) => <li class="tag">{tech}</li>)}
   </ul>
-</a>
+  <p class="card__links">
+    <a href={href}>Case study &rarr;</a>
+    {links.source && <a href={links.source}>Source &#8599;</a>}
+    {links.demo && <a href={links.demo}>Demo &#8599;</a>}
+  </p>
+</article>

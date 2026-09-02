@@ -6,6 +6,7 @@ const projects = defineCollection({
   loader: glob({ base: './src/content/projects', pattern: '**/*.{md,mdx}' }),
   schema: z.object({
     title: z.string().min(3),
+    subtitle: z.string().min(3).optional(),
     summary: z.string().min(40).max(240),
     type: z.enum(['production', 'research', 'open-source', 'experiment']),
     role: z.string().min(3),

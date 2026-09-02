@@ -6,9 +6,10 @@ interface Props {
   description: string;
   image?: string;
   type?: 'website' | 'article';
+  showRSS?: boolean;
 }
 
-const { title, description, image = '/og-default.png', type = 'website' } = Astro.props;
+const { title, description, image = '/og-default.png', type = 'website', showRSS = false } = Astro.props;
 const canonicalURL = new URL(Astro.url.pathname, site.url);
 const socialImageURL = new URL(image, site.url);
 ---
@@ -22,7 +23,7 @@ const socialImageURL = new URL(image, site.url);
 <meta name="description" content={description} />
 <link rel="canonical" href={canonicalURL} />
 <link rel="sitemap" href="/sitemap-index.xml" />
-<link rel="alternate" type="application/rss+xml" title={site.name} href="/rss.xml" />
+{showRSS && <link rel="alternate" type="application/rss+xml" title={site.name} href="/rss.xml" />}
 
 <meta property="og:type" content={type} />
 <meta property="og:url" content={canonicalURL} />
