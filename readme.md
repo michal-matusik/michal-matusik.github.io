@@ -1,4 +1,4 @@
-# xxx-mike-xxx.github.io
+# michal-matusik.github.io
 
 Michal Matusik's personal site — an Astro static site with a portfolio, blog ("Writing"),
 and resume, deployed to GitHub Pages via GitHub Actions.
@@ -29,6 +29,8 @@ for the original specifications this was built from.
 
 ## Deployment
 
-Push to `main`/`master` to deploy via `.github/workflows/deploy.yml`. In the GitHub repo,
-set **Settings → Pages → Source** to **GitHub Actions**. Pull requests run
-`.github/workflows/ci.yml` (`npm ci && npm run check && npm run build`).
+`master` is protected — direct pushes are blocked. Push a feature branch, open a PR (this
+runs `.github/workflows/ci.yml`: `npm ci && npm run check && npm run build`), then merge once
+the `validate` check passes. Merging to `master` triggers `.github/workflows/deploy.yml`,
+which publishes to GitHub Pages. **Settings → Pages → Source** must be set to
+**GitHub Actions** (already done).

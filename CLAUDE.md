@@ -5,9 +5,12 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ## What this is
 
 Michal Matusik's personal site: an Astro static site (portfolio + "Writing" blog + resume),
-deployed to GitHub Pages via GitHub Actions. Repo is `xxx-MIKE-xxx/xxx-MIKE-xxx.github.io`
+deployed to GitHub Pages via GitHub Actions. Repo is `michal-matusik/michal-matusik.github.io`
 (renamed from `personal-website` so it serves as the root user site at
-`https://xxx-mike-xxx.github.io/`, no `base` path needed).
+`https://michal-matusik.github.io/`, no `base` path needed).
+
+`master` is a protected branch: no direct pushes. Work on a feature branch, open a PR (runs
+`ci.yml`), merge once the `validate` check passes — merging triggers `deploy.yml`.
 
 Two specification documents (`UI_UX.docx`, `Technical.docx`) are the design source of truth
 for anything not covered below — read them before making a structural change (new page type,
