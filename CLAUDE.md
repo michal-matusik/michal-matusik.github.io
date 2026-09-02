@@ -59,17 +59,19 @@ toggle only). No database, auth, CMS, or analytics.
 focus, skip-link, container), `components.css` (header, hero, cards, footer, theme toggle),
 `prose.css` (article typography). Theme is `data-theme="light"|"dark"` on `<html>`, set by an
 inline pre-paint script in `BaseHead.astro` and toggled by `ThemeToggle.astro`; both wrap
-`localStorage` access in try/catch for privacy-mode browsers. Add new component styles to
+`localStorage` access in try/catch for privacy-mode browsers. The default is always light —
+`BaseHead.astro` does not fall back to `prefers-color-scheme`, only to an explicit stored
+`'light'`/`'dark'` choice. Add new component styles to
 `components.css` rather than component-scoped `<style>` unless a rule is genuinely local.
 
 ## Placeholder content still to fill in
 
-The site builds and deploys as-is, but several things are intentionally bracketed/placeholder
-until real content is provided — see `README.md` "Filling in content" for the checklist
-(three placeholder projects in `src/content/projects/`, Experience/About copy in
-`index.astro`, `site.ts` email/LinkedIn, `public/portrait.jpg`, `public/resume.pdf`). Don't
-invent real biographical/project content on the user's behalf — leave the bracketed
-placeholders for them to replace.
+Projects, About copy, contact links, portrait, and resume are all filled in with real
+content. The Experience section (`src/pages/index.astro`, `#experience`) is the one
+remaining placeholder: it intentionally renders an empty-state message ("More to come
+soon.") instead of fabricated entries, pending real `experience-item` entries from the
+user. Don't invent real experience/biographical content on the user's behalf — leave the
+empty state as-is until they provide entries.
 
 ## CI/CD
 
