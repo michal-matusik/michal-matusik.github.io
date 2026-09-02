@@ -1,0 +1,52 @@
+---
+title: 'FitPerfect — On-Device Fitness Form Coach'
+summary: 'A private-by-default iOS MVP that turns exercise video into local form feedback, rep counts, and 3D motion data.'
+type: 'experiment'
+role: 'Solo'
+impact: 'Real-time on-device 3D pose feedback with camera-aligned skeleton overlays on iOS.'
+startDate: 2024-04-01
+endDate: 2025-05-01
+stack: ['Python', 'Flutter', 'ONNX Runtime']
+featured: true
+order: 1
+draft: false
+links: {}
+---
+
+## Summary
+
+FitPerfect is a private-by-default iOS MVP that turns exercise video into local form
+feedback: rep counts, joint-angle analysis, and 3D motion data for squats and overhead
+presses. Built solo, April 2024 – May 2025.
+
+## Context and constraints
+
+All inference runs on-device — no video or pose data leaves the phone. That constraint drove
+every downstream decision: model size, runtime, and camera calibration all had to work within
+a mobile ONNX Runtime budget rather than a server GPU.
+
+## Approach
+
+Hand-built the ML pipeline: YOLOv8 for person detection, RTMPose for 2D keypoints, a
+COCO-to-H36M conversion step, and MotionBERT for temporal 3D pose lifting. Engineered
+coordinate transforms and platform-aware ONNX inference so skeleton overlays stay aligned
+with the camera feed under real capture conditions (varying angles, distances, lighting).
+AI-assisted development was used for the Flutter mobile implementation, while the ML pipeline
+itself was hand-built.
+
+## Evaluation
+
+Evaluated primarily through direct capture testing across squat and overhead-press form,
+checking overlay alignment and joint-angle accuracy against real camera conditions rather
+than a held-out benchmark dataset.
+
+## Result
+
+A working iOS MVP that produces local rep counts, joint-angle analysis, and 3D motion data
+in real time, with no cloud dependency.
+
+## What changed
+
+Camera calibration and coordinate-transform work took longer than expected — getting overlays
+to stay visually aligned across different phones and capture angles was the hardest part of
+the project, more so than the pose-estimation models themselves.

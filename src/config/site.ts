@@ -11,7 +11,7 @@ export const site = {
   availability: null as string | null,
   links: {
     github: 'https://github.com/michal-matusik',
-    linkedin: null as string | null,
+    linkedin: 'https://www.linkedin.com/in/micha%C5%82-matusik-7a23ba430/',
     resume: '/resume.pdf',
     scholar: null as string | null,
   },

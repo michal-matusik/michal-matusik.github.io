@@ -1,0 +1,50 @@
+---
+title: 'Chess Quant — Live Chess Tilt Detection Prototype'
+summary: 'An applied-ML product prototype that estimates when continued play may be costly, from recent Lichess game signals.'
+type: 'experiment'
+role: 'Solo'
+impact: 'XGBoost model trained on 1M games; retrospective simulations avoided 56 losses on average.'
+startDate: 2026-05-01
+endDate: 2026-06-30
+stack: ['Next.js', 'TypeScript', 'Python', 'XGBoost', 'ONNX']
+featured: true
+order: 2
+draft: false
+links: {}
+---
+
+## Summary
+
+Chess Quant analyzes a player's recent Lichess games and estimates when continued play may be
+costly ("tilt"), combining session-level accuracy, blunder, pace, streak, and break signals
+into a single stopping recommendation. Built solo, May–June 2026.
+
+## Context and constraints
+
+The signal had to work from data a player already has — recent game history via the Lichess
+API — rather than any invasive tracking, and the full pipeline (auth, evaluation, inference)
+had to run affordably enough to support a consumer-facing product.
+
+## Approach
+
+Trained an XGBoost model on 1M GPU-processed games sampled from a 90M-game corpus. Built a
+full-stack workflow around it: Lichess OAuth via PKCE for auth, Stockfish running in a Web
+Worker for local position evaluation, ONNX-backed inference for the trained model, Firebase
+for the backend, Stripe for payments, and consent-gated analytics.
+
+## Evaluation
+
+Ran retrospective simulations against historical game sessions using the selected stopping
+threshold, comparing outcomes if a player had stopped at the model's recommended point versus
+their actual play.
+
+## Result
+
+Retrospective simulations using the selected stopping threshold avoided 56 losses on average
+across the evaluated sessions.
+
+## What changed
+
+The full-stack surface area (OAuth, payments, consent-gated analytics) was substantial for a
+prototype; a narrower first version focused on the model and evaluation alone would likely
+have validated the core idea faster.
