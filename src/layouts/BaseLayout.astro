@@ -14,15 +14,16 @@ interface Props {
   image?: string;
   type?: 'website' | 'article';
   showWriting?: boolean;
+  showRSS?: boolean;
   personJsonLd?: boolean;
 }
 
-const { title, description, image, type, showWriting, personJsonLd = false } = Astro.props;
+const { title, description, image, type, showWriting, showRSS, personJsonLd = false } = Astro.props;
 ---
 
 <html lang="en">
   <head>
-    <BaseHead title={title} description={description} image={image} type={type} />
+    <BaseHead title={title} description={description} image={image} type={type} showRSS={showRSS} />
     {
       personJsonLd && (
         <script
@@ -46,6 +47,6 @@ const { title, description, image, type, showWriting, personJsonLd = false } = A
     <main id="main">
       <slot />
     </main>
-    <SiteFooter />
+    <SiteFooter showRSS={showRSS} />
   </body>
 </html>

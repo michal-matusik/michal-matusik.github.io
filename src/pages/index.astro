@@ -4,6 +4,7 @@ import ProjectCard from '../components/ProjectCard.astro';
 import WritingCard from '../components/WritingCard.astro';
 import { getCollection } from 'astro:content';
 import { site } from '../config/site';
+import { getSiteVisibility } from '../lib/site-state';
 
 const allProjects = await getCollection('projects', ({ data }) => !data.draft);
 const featuredProjects = allProjects
@@ -11,33 +12,40 @@ const featuredProjects = allProjects
   .sort((a, b) => a.data.order - b.data.order || a.data.startDate.getTime() - b.data.startDate.getTime())
   .slice(0, 3);
 
+const { showWriting, showRSS } = await getSiteVisibility();
 const allPosts = await getCollection('writing', ({ data }) => !data.draft);
-const showWriting = allPosts.length >= 2;
 const featuredPosts = allPosts
   .filter((p) => p.data.featured)
   .sort((a, b) => b.data.published.getTime() - a.data.published.getTime())
   .slice(0, 3);
 ---
 
-<BaseLayout title={`${site.name} — ML/AI Software Engineer`} description={site.description} personJsonLd showWriting={showWriting}>
+<BaseLayout
+  title={`${site.name} — ML/AI Software Engineer`}
+  description={site.description}
+  personJsonLd
+  showWriting={showWriting}
+  showRSS={showRSS}
+>
   <section class="container hero" id="top">
     <img class="hero__portrait" src="/portrait.jpg" alt={site.name} width="144" height="144" />
     <div class="hero__content">
       <h1 class="hero__name">{site.name}</h1>
       <p class="hero__role">{site.role}</p>
+      {/* Pending owner-authored copy per WEBSITE_IMPROVEMENT_PLAN.md Priority 2 */}
       <p class="hero__value">{site.positioning}</p>
       <div class="hero__links">
-        <a class="button button--primary" href={site.links.github}>GitHub</a>
+        <a class="button button--primary" href="/#work">View my work</a>
+        <a class="button" href={site.links.resume}>Résumé</a>
+        <a class="button" href={site.links.github}>GitHub</a>
         {site.links.linkedin && <a class="button" href={site.links.linkedin}>LinkedIn</a>}
         <a class="button" href={`mailto:${site.email}`}>Email</a>
-        <a class="button" href={site.links.resume}>Resume (PDF)</a>
       </div>
     </div>
   </section>
 
   <section class="container credibility">
-    <span>Purdue University — Computer Science</span>
-    <span>Focus: Machine Learning, Deep Learning, AI</span>
+    <span>B.S. Computer Science, Purdue University · Expected 2030</span>
   </section>
 
   <section class="container section" id="work">
@@ -56,11 +64,12 @@ const featuredPosts = allPosts
     }
   </section>
 
-  <section class="container section" id="experience">
+  <section class="container section" id="education">
     <div class="section__heading">
-      <h2>Experience</h2>
+      <h2>Education</h2>
     </div>
-    <p class="hero__role">More to come soon.</p>
+    <p><strong>Purdue University</strong></p>
+    <p class="hero__role">B.S. Computer Science · Expected 2030</p>
   </section>
 
   {
@@ -83,6 +92,7 @@ const featuredPosts = allPosts
     <div class="section__heading">
       <h2>About</h2>
     </div>
+    {/* Pending owner-authored copy per WEBSITE_IMPROVEMENT_PLAN.md About section */}
     <p>
       I'm a Computer Science freshman at Purdue University, originally from Poland, with a
       strong interest in mathematics and artificial intelligence. I'm especially drawn to

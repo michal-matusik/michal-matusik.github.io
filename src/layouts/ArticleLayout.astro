@@ -1,11 +1,13 @@
 ---
 import BaseLayout from './BaseLayout.astro';
 import { site } from '../config/site';
+import { getSiteVisibility } from '../lib/site-state';
 import type { CollectionEntry } from 'astro:content';
 
 type Props = CollectionEntry<'writing'>['data'] & { id: string };
 
 const { title, description, published, updated, tags, canonicalUrl, ogImage, id } = Astro.props;
+const { showWriting, showRSS } = await getSiteVisibility();
 
 const dateLabel = published.toLocaleDateString('en-US', {
   year: 'numeric',
@@ -21,6 +23,8 @@ const canonicalURL = canonicalUrl ?? new URL(`/writing/${id}/`, site.url).toStri
   description={description}
   image={ogImage}
   type="article"
+  showWriting={showWriting}
+  showRSS={showRSS}
 >
   <script
     type="application/ld+json"
