@@ -8,8 +8,8 @@ impact: 'Idempotent concurrent pipeline producing auditable, append-only records
 startDate: 2026-05-01
 endDate: 2026-07-31
 stack: ['Python', 'asyncio', 'WebSockets', 'SQLite', 'Parquet']
-featured: true
-order: 3
+featured: false
+order: 4
 draft: false
 links: {}
 ---
@@ -25,18 +25,30 @@ each one. Built solo, May–July 2026.
 Migration events fire in bursts and the source data comes from several independent feeds, so
 the system had to handle concurrent writes, partial failures, and rate limits without losing
 or duplicating records — a requirement for the data to be usable in downstream research at all.
+Each captured event also needed a full evidence trail: on-chain state, live market quotes,
+holder distribution, and risk signals, all time-stamped consistently enough to reconstruct what
+was knowable about a token at the moment it migrated.
 
 ## Approach
 
-Designed idempotent concurrent workers, a SQLite WAL-based lifecycle tracker per event,
-configurable risk gates and rate limits, and append-only Zstandard-compressed Parquet records
-so every capture is auditable after the fact.
+Built a set of idempotent concurrent workers subscribed to PumpPortal migration events over
+WebSockets, each writing its slice of evidence — on-chain token state, market price/liquidity
+data, holder distribution snapshots, exchange quotes, and configurable risk-gate signals — into
+per-event records keyed so re-processing the same event never produces a duplicate. A SQLite
+WAL-based lifecycle tracker records each event's processing state (pending, in-flight per
+worker, complete) so a crashed or restarted worker can resume mid-event instead of re-running
+from scratch or silently dropping it. Configurable rate limits protect the upstream feeds from
+bursty migration activity. Finished records are written as append-only, Zstandard-compressed
+Parquet files, so every capture is both storage-efficient and auditable after the fact.
 
 ## Evaluation
 
 Validated primarily by auditing captured records for completeness and consistency across
-concurrent worker runs, rather than a formal benchmark — the goal was reliable data capture,
-not a predictive model.
+concurrent worker runs, rather than a formal benchmark — the goal was reliable data capture, not
+a predictive model. The audit checked that every migration event produced a full set of
+evidence fields, that concurrent workers never wrote duplicate or partially-overwritten records
+for the same event, and that the lifecycle tracker's state matched what was actually present in
+the Parquet output after worker restarts.
 
 ## Result
 

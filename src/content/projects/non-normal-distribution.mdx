@@ -1,0 +1,60 @@
+---
+title: 'Non-Normal Distribution'
+subtitle: 'Multi-Task Image Denoising & Noise Characterization'
+summary: 'A single U-Net that jointly denoises noisy MNIST-style images, classifies which noise distribution corrupted them, and estimates the noise parameters.'
+type: 'research'
+role: 'Solo'
+impact: 'Scored 100/100 on the graded task: 29.3 dB PSNR, 100% noise-type accuracy, sub-threshold mu/sigma error.'
+startDate: 2026-09-03
+endDate: 2026-09-04
+stack: ['Python', 'PyTorch', 'U-Net', 'NumPy']
+featured: true
+order: 2
+draft: false
+links: { source: 'https://github.com/michal-matusik/Non-Normal_Distribution' }
+---
+
+## Summary
+
+Non-Normal Distribution is a single U-Net that simultaneously denoises 28x28 grayscale images
+corrupted with either Gaussian or uniform noise, classifies which distribution was used, and
+estimates the Gaussian noise parameters. Built solo, September 2026.
+
+## Context and constraints
+
+The task required one shared representation to serve two very different objectives at once: a
+dense, pixel-level reconstruction (denoising) and a coarse, global classification/estimation
+task (identifying the noise source). The final model also had to run inference on a hidden test
+set within a 5-minute GPU budget with no internet access, which ruled out large architectures
+or heavy post-processing.
+
+## Approach
+
+Built a compact U-Net with a shared 2-stage encoder, a bottleneck, and a 2-stage decoder with
+skip connections that produces the denoised image. A lightweight MLP classification head
+branches off the bottleneck features to predict the noise type. Rather than adding a fourth
+learned head for the Gaussian parameters, `mu` and `sigma` are recovered analytically as the
+mean and standard deviation of the residual between the noisy input and the denoised output —
+avoiding an extra learned output for a quantity the denoising task already implies. Trained
+with a combined MSE (reconstruction) + BCE (classification) loss using Adam at a 1e-3 learning
+rate, batch size 64, for 15 epochs, with a fixed seed and deterministic cuDNN settings for
+reproducibility.
+
+## Evaluation
+
+Scored against the competition's four weighted sub-scores (25 points each): classification
+accuracy scaled between 50% (chance) and 95%, reconstruction quality via PSNR scaled between 10
+and 16 dB, and Gaussian `mu`/`sigma` estimation scored as full marks below a 0.005 MSE threshold
+or zero above it.
+
+## Result
+
+Validation-set performance: 29.28 dB PSNR, 100% noise-type classification accuracy, 0.001356 MSE
+on `mu`, and 0.001197 MSE on `sigma` — full marks on all four sub-scores, for a final score of
+100/100.
+
+## What changed
+
+Estimating the Gaussian parameters analytically from the denoising residual, instead of training
+a dedicated regression head for them, turned out to be enough to hit the accuracy threshold
+without adding a fourth loss term or extra model capacity to tune.

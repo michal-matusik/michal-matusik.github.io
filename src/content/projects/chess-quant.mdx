@@ -9,7 +9,7 @@ startDate: 2026-05-01
 endDate: 2026-06-30
 stack: ['Next.js', 'TypeScript', 'Python', 'XGBoost', 'ONNX']
 featured: true
-order: 2
+order: 3
 draft: false
 links: {}
 ---
@@ -24,20 +24,30 @@ into a single stopping recommendation. Built solo, May–June 2026.
 
 The signal had to work from data a player already has — recent game history via the Lichess
 API — rather than any invasive tracking, and the full pipeline (auth, evaluation, inference)
-had to run affordably enough to support a consumer-facing product.
+had to run affordably enough to support a consumer-facing product. Because the recommendation
+is a "stop playing" nudge rather than a move suggestion, the model needed to reason about a
+player's session as a whole rather than any single position.
 
 ## Approach
 
-Trained an XGBoost model on 1M GPU-processed games sampled from a 90M-game corpus. Built a
-full-stack workflow around it: Lichess OAuth via PKCE for auth, Stockfish running in a Web
-Worker for local position evaluation, ONNX-backed inference for the trained model, Firebase
-for the backend, Stripe for payments, and consent-gated analytics.
+Sampled 1M games from a 90M-game Lichess corpus, running each one through Stockfish for
+position evaluation on GPU to generate training features. Engineered session-level features
+from that data: rolling move accuracy, blunder rate, pace (time per move), win/loss streak
+length, and time since the player's last break, then trained an XGBoost classifier on those
+features to output a single stopping recommendation per session. Wrapped the model in a
+full-stack product: Lichess OAuth via PKCE for auth so the app can read a player's own game
+history, Stockfish running client-side in a Web Worker for local position evaluation without a
+server round-trip, the trained XGBoost model exported to ONNX for lightweight in-browser
+inference, Firebase for the backend and user data, Stripe for payments, and consent-gated
+analytics so usage tracking only runs for players who opt in.
 
 ## Evaluation
 
-Ran retrospective simulations against historical game sessions using the selected stopping
-threshold, comparing outcomes if a player had stopped at the model's recommended point versus
-their actual play.
+Ran retrospective simulations by replaying historical game sessions and, for each one, applying
+the model's chosen stopping threshold to decide when it would have told the player to stop. Each
+simulation then compared the outcome of the games the player actually went on to play after that
+point against what actually happened, isolating the losses that occurred specifically after the
+model's recommended stopping point.
 
 ## Result
 
