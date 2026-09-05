@@ -1,0 +1,55 @@
+---
+title: 'Source Extraction'
+subtitle: 'Scientific Claim Retrieval on SciFact'
+summary: 'An SGPT-based embedding retrieval system that matches scientific claims to the paper that supports or refutes them, evaluated on the SciFact benchmark.'
+type: 'research'
+role: 'Solo'
+impact: 'nDCG@10 of 0.551 on SciFact retrieval — full marks against the competition scoring threshold.'
+startDate: 2026-09-04
+stack: ['Python', 'PyTorch', 'Transformers', 'NLTK']
+featured: false
+order: 5
+draft: false
+links: { source: 'https://github.com/michal-matusik/source-extraction-scifact' }
+---
+
+## Summary
+
+Source Extraction is an embedding-based retrieval system that, given a scientific claim, finds
+the paper from a corpus that supports or refutes it — the retrieval component of a
+fact-checking pipeline, evaluated on the SciFact benchmark. Built solo, September 2026.
+
+## Context and constraints
+
+Query and document embeddings had to be exactly 768-dimensional, and only `torch`, `pandas`,
+`numpy`, `nltk`, and `transformers` were allowed — ruling out higher-level libraries like
+`sentence-transformers`. Final grading ran offline on GPU with a 10-minute budget to embed and
+score the full corpus of roughly 5,200 documents against 300 queries.
+
+## Approach
+
+Adapted the SGPT technique to turn a decoder-only language model into a bi-encoder, built on the
+`SGPT-125M-weightedmean-msmarco-specb-bitfit` checkpoint. Implemented weighted-mean pooling over
+token hidden states (later tokens weighted more heavily than earlier ones) directly against the
+base `AutoModel`, since `sentence-transformers` wasn't in the allowed library list. Used the
+checkpoint's asymmetric bracket-token convention — `[` `]` around queries and `{` `}` around
+documents — so a single shared encoder can distinguish the two roles. Documents were formed as
+`title + text` and tokenized in batches of 128 with `max_length=300`, raising it from the
+150-token starter default to avoid truncating longer SciFact abstracts.
+
+## Evaluation
+
+Measured nDCG@10, averaged over all 300 validation claims against the 5,183-document corpus,
+after embedding both sets and ranking documents by cosine similarity per query.
+
+## Result
+
+Achieved an nDCG@10 of 0.551 against a 0.5 threshold for full marks, for a score of 100/100.
+The full embedding and scoring run completed in roughly 90 seconds, well within the 10-minute
+grading budget.
+
+## What changed
+
+The 150-token default sequence length from the starter code was silently truncating longer
+SciFact abstracts; raising it to 300 was necessary before retrieval quality reflected the full
+document text rather than a partial embedding.
